@@ -7,19 +7,26 @@
     "engines": {
         "vscode": "^1.0.0"
     },
+    "license": "MIT",
     "categories": [
+        "Languages",
         "Other"
     ],
+    "keywords": [
+        "html",
+        "css",
+        "class",
+        "completion",
+        "intellisense"
+    ],
+    "galleryBanner": {
+        "color": "#72a6b8",
+        "theme": "dark"
+    },
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onLanguage:html"
     ],
     "main": "./out/src/extension",
-    "contributes": {
-        "commands": [{
-            "command": "extension.sayHello",
-            "title": "Hello World"
-        }]
-    },
     "scripts": {
         "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
         "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
