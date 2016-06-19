@@ -1,7 +1,7 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import {CssClassDefinition} from './css-class-definition';
+import {CssClassDefinition} from './../../css-class-definition';
 
 export interface ParseEngine {
     languageId: string;
