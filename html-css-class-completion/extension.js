@@ -10,7 +10,7 @@ function activate(context) {
     function fetchAllCssRulesInCssFiles() {
         vscode.window.showInformationMessage('HTML CSS Class Completion: Fetching CSS rules from CSS files, please wait.');
         // fetches the css files excluding the ones within node_modules folders that are within another node_modules folder
-        vscode.workspace.findFiles('**/*.css', 'node_modules/**/node_modules/**/*').then(function (uris) {
+        vscode.workspace.findFiles('**/*.css').then(function (uris) {
             // will contain all the css files concatenated
             var cssFilesConcatenated = "";
             // goes through each css file found and open it
