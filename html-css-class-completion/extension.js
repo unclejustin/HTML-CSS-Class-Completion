@@ -5,96 +5,365 @@ var css = require('css');
 //var cheerio = require('cheerio');
 
 function activate(context) {
-    var classes = [];
-
-    function fetchAllCssRulesInCssFiles() {
-        vscode.window.showInformationMessage('HTML CSS Class Completion: Fetching CSS rules from CSS files, please wait.');
-        // fetches the css files excluding the ones within node_modules folders that are within another node_modules folder
-        vscode.workspace.findFiles('**/*.css').then(function (uris) {
-            // will contain all the css files concatenated
-            var cssFilesConcatenated = "";
-            // goes through each css file found and open it
-            uris.forEach(function (uri, index) {
-                vscode.workspace.openTextDocument(uri).then(function (textDocument) {
-                    // extracts the text of the file and concatenates it
-                    cssFilesConcatenated += textDocument.getText();
-                    if (uris.length == index + 1) {
-                        // after finishing the process the css classes are fetched from this large string and added to the classes array
-                        fetchClasses(cssFilesConcatenated, classes);
-                        vscode.window.showInformationMessage("HTML CSS Class Completion: Finished fetching CSS rules from CSS files.");
-                    }
-                });
-            });
-        });
-    }
-
-    // function fetchAllCssRulesInHtmlFiles() {
-    //     vscode.window.showInformationMessage('HTML CSS Class Completion: Fetching CSS rules from HTML files, please wait.');
-    //     vscode.workspace.findFiles('**/*.html', 'node_modules/**/node_modules/**/*').then(function (uris) {
-    //         var stylesConcatenated = "";
-    //         uris.forEach(function (uri, index) {
-    //             vscode.workspace.openTextDocument(uri).then(function (textDocument) {
-    //                 var $ = cheerio.load(textDocument.getText());
-    //                 var $styles = $('style');
-    //                 if ($styles.length > 0) {
-    //                     $styles.forEach(function ($style) {
-    //                         stylesConcatenated += $style.children[0].data;
-    //                     });
-    //                 }
-    //                 if (uris.length == index + 1) {
-    //                     fetchClasses(stylesConcatenated, classes);
-    //                     vscode.window.showInformationMessage("HTML CSS Class Completion: Finished fetching CSS rules from HTML files.")
-    //                 }
-    //             });
-    //             return;
-    //         });
-    //     });
-    // }
-
-    function fetchClasses(text, classes) {
-        var parsedCss = css.parse(text);
-        
-        // go through each of the rules...
-        parsedCss.stylesheet.rules.forEach(function (rule) {
-            // ...of type rule
-            if (rule.type === 'rule') {
-                // go through each of the selectors of the current rule 
-                rule.selectors.forEach(function (selector) {
-                    var classesRegex = /[.]([\w-]+)/g;
-                    var tempClasses = [];
-                    var item = null;
-                    
-                    // check if the current selector contains class names
-                    while (item = classesRegex.exec(selector)) {
-                        tempClasses.push(item[1]);
-                    }
-
-                    if (tempClasses.length > 0) {
-                        // extract class names specified on the current selector
-                        // and then go through each of them
-                        tempClasses.forEach(function (className) {
-                            // check if the current class name is not in the classes array
-                            if (classes.indexOf(className) === -1) {
-                                // if so adds it to it
-                                classes.push(className);
-                            }
-                        });
-                    }
-                });
-            }
-        });
-
-        return classes;
-    }
+    var classes = [
+        'navbar',
+        'caret',
+        'label',
+        'table',
+        'img-responsive',
+        'img-rounded',
+        'img-thumbnail',
+        'img-circle',
+        'sr-only',
+        'lead',
+        'text-muted',
+        'text-primary',
+        'text-warning',
+        'text-danger',
+        'text-success',
+        'text-info',
+        'text-left',
+        'text-right',
+        'text-center',
+        'h6',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'page-header',
+        'list-unstyled',
+        'list-inline',
+        'initialism',
+        'pull-right',
+        'prettyprint',
+        'pre-scrollable',
+        'container',
+        'row',
+        'col-lg-12',
+        'col-xs-11',
+        'col-xs-1',
+        'col-xs-2',
+        'col-xs-3',
+        'col-xs-4',
+        'col-xs-5',
+        'col-xs-6',
+        'col-xs-7',
+        'col-xs-8',
+        'col-xs-9',
+        'col-xs-10',
+        'col-xs-12',
+        'col-sm-11',
+        'col-sm-1',
+        'col-sm-2',
+        'col-sm-3',
+        'col-sm-4',
+        'col-sm-5',
+        'col-sm-6',
+        'col-sm-7',
+        'col-sm-8',
+        'col-sm-9',
+        'col-sm-10',
+        'col-sm-12',
+        'col-sm-push-1',
+        'col-sm-push-2',
+        'col-sm-push-3',
+        'col-sm-push-4',
+        'col-sm-push-5',
+        'col-sm-push-6',
+        'col-sm-push-7',
+        'col-sm-push-8',
+        'col-sm-push-9',
+        'col-sm-push-10',
+        'col-sm-push-11',
+        'col-sm-pull-1',
+        'col-sm-pull-2',
+        'col-sm-pull-3',
+        'col-sm-pull-4',
+        'col-sm-pull-5',
+        'col-sm-pull-6',
+        'col-sm-pull-7',
+        'col-sm-pull-8',
+        'col-sm-pull-9',
+        'col-sm-pull-10',
+        'col-sm-pull-11',
+        'col-sm-offset-1',
+        'col-sm-offset-2',
+        'col-sm-offset-3',
+        'col-sm-offset-4',
+        'col-sm-offset-5',
+        'col-sm-offset-6',
+        'col-sm-offset-7',
+        'col-sm-offset-8',
+        'col-sm-offset-9',
+        'col-sm-offset-10',
+        'col-sm-offset-11',
+        'col-md-11',
+        'col-md-1',
+        'col-md-2',
+        'col-md-3',
+        'col-md-4',
+        'col-md-5',
+        'col-md-6',
+        'col-md-7',
+        'col-md-8',
+        'col-md-9',
+        'col-md-10',
+        'col-md-12',
+        'col-md-push-0',
+        'col-md-push-1',
+        'col-md-push-2',
+        'col-md-push-3',
+        'col-md-push-4',
+        'col-md-push-5',
+        'col-md-push-6',
+        'col-md-push-7',
+        'col-md-push-8',
+        'col-md-push-9',
+        'col-md-push-10',
+        'col-md-push-11',
+        'col-md-pull-0',
+        'col-md-pull-1',
+        'col-md-pull-2',
+        'col-md-pull-3',
+        'col-md-pull-4',
+        'col-md-pull-5',
+        'col-md-pull-6',
+        'col-md-pull-7',
+        'col-md-pull-8',
+        'col-md-pull-9',
+        'col-md-pull-10',
+        'col-md-pull-11',
+        'col-md-offset-0',
+        'col-md-offset-1',
+        'col-md-offset-2',
+        'col-md-offset-3',
+        'col-md-offset-4',
+        'col-md-offset-5',
+        'col-md-offset-6',
+        'col-md-offset-7',
+        'col-md-offset-8',
+        'col-md-offset-9',
+        'col-md-offset-10',
+        'col-md-offset-11',
+        'col-lg-11',
+        'col-lg-1',
+        'col-lg-2',
+        'col-lg-3',
+        'col-lg-4',
+        'col-lg-5',
+        'col-lg-6',
+        'col-lg-7',
+        'col-lg-8',
+        'col-lg-9',
+        'col-lg-10',
+        'col-lg-push-0',
+        'col-lg-push-1',
+        'col-lg-push-2',
+        'col-lg-push-3',
+        'col-lg-push-4',
+        'col-lg-push-5',
+        'col-lg-push-6',
+        'col-lg-push-7',
+        'col-lg-push-8',
+        'col-lg-push-9',
+        'col-lg-push-10',
+        'col-lg-push-11',
+        'col-lg-pull-0',
+        'col-lg-pull-1',
+        'col-lg-pull-2',
+        'col-lg-pull-3',
+        'col-lg-pull-4',
+        'col-lg-pull-5',
+        'col-lg-pull-6',
+        'col-lg-pull-7',
+        'col-lg-pull-8',
+        'col-lg-pull-9',
+        'col-lg-pull-10',
+        'col-lg-pull-11',
+        'col-lg-offset-0',
+        'col-lg-offset-1',
+        'col-lg-offset-2',
+        'col-lg-offset-3',
+        'col-lg-offset-4',
+        'col-lg-offset-5',
+        'col-lg-offset-6',
+        'col-lg-offset-7',
+        'col-lg-offset-8',
+        'col-lg-offset-9',
+        'col-lg-offset-10',
+        'col-lg-offset-11',
+        'table-bordered',
+        'table-responsive',
+        'form-control',
+        'form-group',
+        'checkbox',
+        'checkbox-inline',
+        'input-sm',
+        'input-lg',
+        'control-label',
+        'input-group-addon',
+        'form-control-static',
+        'help-block',
+        'btn',
+        'active',
+        'btn-default',
+        'btn-primary',
+        'btn-warning',
+        'btn-danger',
+        'btn-success',
+        'btn-info',
+        'btn-link',
+        'btn-lg',
+        'btn-xs',
+        'btn-block',
+        'fade',
+        'in',
+        'collapse',
+        'collapsing',
+        'glyphicon',
+        'dropdown',
+        'dropdown-menu',
+        'divider',
+        'dropdown-header',
+        'dropdown-backdrop',
+        'btn-group-vertical',
+        'btn-group',
+        'dropdown-toggle',
+        'btn-group-justified',
+        'input-group',
+        'col',
+        'input-group-btn',
+        'nav',
+        'nav-divider',
+        'nav-tabs',
+        'nav-justified',
+        'nav-tabs-justified',
+        'pill-pane',
+        'navbar-header',
+        'navbar-collapse',
+        'navbar-static-top',
+        'navbar-fixed-bottom',
+        'navbar-fixed-top',
+        'navbar-brand',
+        'navbar-toggle',
+        'icon-bar',
+        'navbar-nav',
+        'navbar-left',
+        'navbar-right',
+        'navbar-form',
+        'navbar-btn',
+        'navbar-text',
+        'navbar-default',
+        'navbar-link',
+        'navbar-inverse',
+        'breadcrumb',
+        'pagination',
+        'pager',
+        'label-default',
+        'label-primary',
+        'label-success',
+        'label-info',
+        'label-warning',
+        'label-danger',
+        'badge',
+        'jumbotron',
+        'thumbnail',
+        'caption',
+        'alert',
+        'alert-link',
+        'alert-dismissable',
+        'close',
+        'alert-success',
+        'alert-info',
+        'alert-warning',
+        'alert-danger',
+        'progress',
+        'progress-bar',
+        'progress-bar-success',
+        'progress-bar-info',
+        'progress-bar-warning',
+        'progress-bar-danger',
+        'media-body',
+        'media',
+        'media-object',
+        'media-heading',
+        'pull-left',
+        'media-list',
+        'list-group',
+        'list-group-item',
+        'list-group-item-heading',
+        'list-group-item-text',
+        'panel',
+        'panel-body',
+        'panel-heading',
+        'panel-title',
+        'panel-footer',
+        'panel-default',
+        'panel-primary',
+        'panel-success',
+        'panel-warning',
+        'panel-danger',
+        'panel-info',
+        'well',
+        'well-lg',
+        'well-sm',
+        'modal-open',
+        'modal',
+        'modal-dialog',
+        'modal-content',
+        'modal-backdrop',
+        'modal-header',
+        'modal-title',
+        'modal-body',
+        'modal-footer',
+        'tooltip',
+        'top',
+        'right',
+        'bottom',
+        'left',
+        'tooltip-inner',
+        'tooltip-arrow',
+        'popover',
+        'popover-title',
+        'popover-content',
+        'arrow',
+        'carousel',
+        'carousel-inner',
+        'item',
+        'prev',
+        'next',
+        'carousel-control',
+        'glyphicon-chevron-right',
+        'icon-next',
+        'carousel-indicators',
+        'carousel-caption',
+        'hide',
+        'show',
+        'invisible',
+        'text-hide',
+        'affix',
+        'hidden',
+        'visible-xs',
+        'visible-sm',
+        'visible-md',
+        'visible-lg',
+        'hidden-xs',
+        'hidden-sm',
+        'hidden-md',
+        'hidden-lg',
+        'visible-print',
+        'hidden-print',
+    ];
 
     var disposable = vscode.languages.registerCompletionItemProvider('html', {
         provideCompletionItems(document, position, token) {
             var start = new vscode.Position(position.line, 0);
             var range = new vscode.Range(start, position);
             var text = document.getText(range);
-            
+
             // check if the cursor is on a class attribute and retrieve all the css rules in this class attribute
-            var rawClasses = text.match(/class=["|']([\w- ]*$)/); 
+            var rawClasses = text.match(/class=["|']([\w- ]*$)/);
             if (rawClasses === null) {
                 return [];
             }
@@ -120,7 +389,7 @@ function activate(context) {
             for (var i = 0; i < classes.length; i++) {
                 completionItems.push(new vscode.CompletionItem(classes[i]));
             }
-            
+
             // removes from the collection the classes already specified on the class attribute
             for (var i = 0; i < classesOnAttribute.length; i++) {
                 for (var j = 0; j < completionItems.length; j++) {
@@ -137,9 +406,6 @@ function activate(context) {
         }
     });
     context.subscriptions.push(disposable);
-    
-    fetchAllCssRulesInCssFiles();
-    //fetchAllCssRulesInHtmlFiles();
 }
 exports.activate = activate;
 
